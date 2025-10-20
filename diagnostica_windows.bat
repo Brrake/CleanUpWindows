@@ -86,7 +86,7 @@ echo [2/8] Scansione file di sistema (SFC)...
 echo =====================================
 echo.
 call :LogMessage "Avvio SFC /scannow"
-sfc /scannow >> "%LOGFILE%" 2>&1
+sfc /scannow
 if %errorlevel% neq 0 (
     echo AVVISO: SFC ha riscontrato problemi
     call :LogMessage "SFC completato con errori: %errorlevel%"
@@ -104,13 +104,13 @@ echo [3/8] Scansione disco (CHKDSK)...
 echo =====================================
 echo.
 call :LogMessage "Avvio CHKDSK scan"
-chkdsk C: /scan >> "%LOGFILE%" 2>&1
+chkdsk C: /scan
 echo.
 set /p repair=Vuoi pianificare riparazione disco al riavvio? (y/n): 
 if /i "%repair%"=="y" (
     call :LogMessage "Pianificazione CHKDSK /f /r"
     echo Pianificazione scansione completa al prossimo riavvio...
-    echo y | chkdsk C: /f /r >> "%LOGFILE%" 2>&1
+    echo y | chkdsk C: /f /r
     echo Riavvio necessario per completare la scansione
     call :LogMessage "CHKDSK /f /r pianificato"
 ) else (
@@ -127,7 +127,7 @@ echo [4/8] Scansione integrità immagine (DISM)...
 echo =====================================
 echo.
 call :LogMessage "Avvio DISM /scanhealth"
-dism /online /cleanup-image /scanhealth >> "%LOGFILE%" 2>&1
+dism /online /cleanup-image /scanhealth
 if %errorlevel% neq 0 (
     echo AVVISO: DISM scanhealth ha riscontrato problemi
     call :LogMessage "DISM scanhealth con errori: %errorlevel%"
@@ -142,8 +142,8 @@ if /i "%choice%"=="y" (
     echo.
     echo Pulizia componenti e riparazione immagine...
     call :LogMessage "Avvio DISM cleanup e restorehealth"
-    dism /online /cleanup-image /startcomponentcleanup >> "%LOGFILE%" 2>&1
-    dism /online /cleanup-image /restorehealth >> "%LOGFILE%" 2>&1
+    dism /online /cleanup-image /startcomponentcleanup
+    dism /online /cleanup-image /restorehealth
     if %errorlevel% neq 0 (
         echo AVVISO: DISM restorehealth ha riscontrato problemi
         call :LogMessage "DISM restorehealth con errori: %errorlevel%"
@@ -182,11 +182,11 @@ if /i "%wupdate%"=="y" (
     echo =====================================
     echo.
     call :LogMessage "Reset Windows Update"
-    net stop wuauserv >> "%LOGFILE%" 2>&1
-    net stop bits >> "%LOGFILE%" 2>&1
-    rd /s /q %systemroot%\SoftwareDistribution >> "%LOGFILE%" 2>&1
-    net start wuauserv >> "%LOGFILE%" 2>&1
-    net start bits >> "%LOGFILE%" 2>&1
+    net stop wuauserv
+    net stop bits
+    rd /s /q %systemroot%\SoftwareDistribution
+    net start wuauserv
+    net start bits
     echo Componenti Windows Update resettati
     call :LogMessage "Windows Update resettato"
 ) else (
@@ -206,7 +206,7 @@ if /i "%checkupd%"=="y" (
     echo =====================================
     echo.
     call :LogMessage "Controllo aggiornamenti"
-    usoclient startscan >> "%LOGFILE%" 2>&1
+    usoclient startscan
     timeout /t 5 /nobreak >nul
     echo Scansione aggiornamenti avviata
     call :LogMessage "Aggiornamenti - scansione avviata"
