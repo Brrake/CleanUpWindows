@@ -261,7 +261,8 @@ if /i "%cleanup%"=="y" (
     echo =====================================
     echo.
     call :LogMessage "Avvio Cleanmgr"
-    cleanmgr /sagerun:1
+    cleanmgr /sageset:101
+    cleanmgr /sagerun:101
     call :LogMessage "Cleanmgr completato"
 ) else (
     echo [8/8] Pulizia disco saltata
