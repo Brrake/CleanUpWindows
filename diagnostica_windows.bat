@@ -182,13 +182,47 @@ if /i "%wupdate%"=="y" (
     echo =====================================
     echo.
     call :LogMessage "Reset Windows Update"
-    net stop wuauserv
-    net stop bits
-    rd /s /q %systemroot%\SoftwareDistribution
-    net start wuauserv
-    net start bits
+    
+    :: Ferma i servizi
+    net stop wuauserv >nul 2>&1
+    net stop bits >nul 2>&1
+    net stop cryptsvc >nul 2>&1
+    net stop msiserver >nul 2>&1
+    
+    :: Attendi che i servizi si fermino completamente
+    timeout /t 2 /nobreak >nul
+    
+    :: Rinomina le cartelle (invece di eliminare)
+    if exist "%systemroot%\SoftwareDistribution" (
+        ren "%systemroot%\SoftwareDistribution" SoftwareDistribution.old >nul 2>&1
+        if %errorlevel% equ 0 (
+            echo SoftwareDistribution rinominata con successo
+            call :LogMessage "SoftwareDistribution rinominata"
+        ) else (
+            echo AVVISO: Impossibile rinominare SoftwareDistribution
+            call :LogMessage "ERRORE: SoftwareDistribution non rinominata"
+        )
+    )
+    
+    if exist "%systemroot%\System32\catroot2" (
+        ren "%systemroot%\System32\catroot2" catroot2.old >nul 2>&1
+        if %errorlevel% equ 0 (
+            echo catroot2 rinominata con successo
+            call :LogMessage "catroot2 rinominata"
+        ) else (
+            echo AVVISO: Impossibile rinominare catroot2
+            call :LogMessage "ERRORE: catroot2 non rinominata"
+        )
+    )
+    
+    :: Riavvia i servizi
+    net start wuauserv >nul 2>&1
+    net start bits >nul 2>&1
+    net start cryptsvc >nul 2>&1
+    net start msiserver >nul 2>&1
+    
     echo Componenti Windows Update resettati
-    call :LogMessage "Windows Update resettato"
+    call :LogMessage "Windows Update resettato completamente"
 ) else (
     echo [6/8] Reset Windows Update saltato
     call :LogMessage "Reset Windows Update non eseguito"
