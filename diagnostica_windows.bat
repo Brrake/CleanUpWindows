@@ -85,16 +85,18 @@ echo =====================================
 echo [2/8] Scansione file di sistema (SFC)...
 echo =====================================
 echo.
-call :LogMessage "Avvio SFC /scannow"
-sfc /scannow
-if %errorlevel% neq 0 (
-    echo AVVISO: SFC ha riscontrato problemi
-    call :LogMessage "SFC completato con errori: %errorlevel%"
-) else (
-    echo SFC completato con successo
-    call :LogMessage "SFC completato con successo"
+set /p choice_sfc=Vuoi scansionare i file di sistema (SFC) ? (y/n): 
+if /i "%choice_sfc%"=="y" (
+    call :LogMessage "Avvio SFC /scannow"
+    sfc /scannow
+    if %errorlevel% neq 0 (
+        echo AVVISO: SFC ha riscontrato problemi
+        call :LogMessage "SFC completato con errori: %errorlevel%"
+    ) else (
+        echo SFC completato con successo
+        call :LogMessage "SFC completato con successo"
+    )
 )
-
 ::=====================================
 :: SCANSIONE DISCO (CHKDSK)
 ::=====================================
@@ -103,8 +105,11 @@ echo =====================================
 echo [3/8] Scansione disco (CHKDSK)...
 echo =====================================
 echo.
-call :LogMessage "Avvio CHKDSK scan"
-chkdsk C: /scan
+set /p choice_chk=Vuoi scansionare il disco (CHKDSK) ? (y/n): 
+if /i "%choice_chk%"=="y" (
+    call :LogMessage "Avvio CHKDSK scan"
+    chkdsk C: /scan
+)
 echo.
 set /p repair=Vuoi pianificare riparazione disco al riavvio? (y/n): 
 if /i "%repair%"=="y" (
