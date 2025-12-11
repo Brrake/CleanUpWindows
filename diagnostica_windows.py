@@ -107,14 +107,16 @@ else:
 
 # DISM
 print("\n[4/8] Scansione integrità immagine (DISM)...")
-log_message(LOGFILE, "Avvio DISM /scanhealth")
-result = subprocess.run(['dism', '/online', '/cleanup-image', '/scanhealth'])
-if result.returncode != 0:
-    print("AVVISO: DISM scanhealth ha riscontrato problemi")
-    log_message(LOGFILE, f"DISM scanhealth con errori: {result.returncode}")
-else:
-    print("DISM scanhealth completato")
-    log_message(LOGFILE, "DISM scanhealth completato")
+choice_scan = input("Vuoi avviare la scansione con DISM? (y/n): ")
+if choice_scan.strip().lower() == "y":
+    log_message(LOGFILE, "Avvio DISM /scanhealth")
+    result = subprocess.run(['dism', '/online', '/cleanup-image', '/scanhealth'])
+    if result.returncode != 0:
+        print("AVVISO: DISM scanhealth ha riscontrato problemi")
+        log_message(LOGFILE, f"DISM scanhealth con errori: {result.returncode}")
+    else:
+        print("DISM scanhealth completato")
+        log_message(LOGFILE, "DISM scanhealth completato")
 
 choice = input("Vuoi tentare la riparazione con DISM? (y/n): ")
 if choice.strip().lower() == "y":
